@@ -1,0 +1,1 @@
+Affichage.Personne;Personne.nom:Personne.Rakoto;prenom:jean;age:30;sexe:0;;nom:Rakoto;prenom:jean;age:30;sexe:0;;nom:Rakoto;prenom:jean;age:30;sexe:0;;nom:Rakoto;prenom:jean;age:30;sexe:0;;nom:Rakoto;prenom:jean;age:30;sexe:0
