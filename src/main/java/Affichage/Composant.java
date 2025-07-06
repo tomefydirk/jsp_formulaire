@@ -26,7 +26,7 @@ public class Composant {
             if(f.getType().getName().contains("Affichage.")){
                 html+="</br>";
                 Class<? extends Composant> classModel = (Class<? extends Composant>) Class.forName(f.getType().getName());
-                Composant instance = classModel.newInstance();
+                Composant instance = classModel.getConstructor().newInstance();
                 html += instance.construireHtmlInsertComposant();
             }
             if (type.equals(String.class)) {
@@ -86,7 +86,7 @@ public class Composant {
     public static Object getValField(Object classe, Field f) {
         try {
             String nomMethode = "get" + convertDebutMajuscule(f.getName());
-            Object o = classe.getClass().getMethod(nomMethode, null).invoke(classe, null);
+            Object o = classe.getClass().getMethod(nomMethode).invoke(classe);
             if (o == null)
                 return "";
             return o;
