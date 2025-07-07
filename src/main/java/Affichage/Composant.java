@@ -31,28 +31,43 @@ public class Composant {
         return html;
     }
 
-    private static String construireHtmlInsertComposantPriv(Class<? extends Object> obj) throws Exception {
+    private static String construireHtmlInsertComposantPriv(Class<? extends Object> obj, String prefix)
+            throws Exception {
         String html = "";
+        boolean isPrefixUnvalid = prefix == null || prefix.trim().isEmpty();
+        String maybePrefix;
+        if (!isPrefixUnvalid) {
+            if (prefix.endsWith(".")) {
+                maybePrefix = prefix;
+            } else {
+                maybePrefix = String.format("%s.", prefix);
+            }
+        } else {
+            maybePrefix = "";
+        }
         Field[] fields = obj.getDeclaredFields();
 
         for (int i = 0; i < fields.length; i++) {
             Field f = fields[i];
             f.setAccessible(true);
             Class<?> type = f.getType();
-            html += "<label>" + f.getName() + "</label> : ";
+            String fieldName = String.format("%s%s", maybePrefix, f.getName());
+            html += "<label>" + fieldName + "</label> : ";
             if (Composant.class.isAssignableFrom(type)) {
                 html += "</br>";
                 Composant instance = (Composant) type.getConstructor().newInstance();
                 if (instance instanceof Deroulante) {
-                    ((Deroulante) instance).construireDeroulanteComposant(f.getName());
+                    ((Deroulante) instance).construireDeroulanteComposant(fieldName);
                 } else {
-                    html += instance.construireHtmlInsertComposant();
+                    html += instance.construireHtmlInsertComposant(fieldName);
                 }
             } else if (type.equals(String.class)) {
-                html += "<input type='text' name='" + f.getName() + "' />\n";
+                html += "<input type='text' name='" + fieldName + "' />\n";
             } else if (type.equals(int.class) || type.equals(Integer.class)
                     || type.equals(double.class) || type.equals(Double.class)) {
-                html += "<input type='number' name='" + f.getName() + "' />\n";
+                html += "<input type='number' name='" + fieldName + "' />\n";
+            } else if (!type.isArray()) {
+                html += construireHtmlInsertComposantPriv(obj, fieldName);
             }
             html += "</br>";
         }
@@ -60,8 +75,16 @@ public class Composant {
         return html;
     }
 
+    private static String construireHtmlInsertComposantPriv(Class<? extends Object> obj) throws Exception {
+        return construireHtmlInsertComposantPriv(obj, null);
+    }
+
     public String construireHtmlInsertComposant() throws Exception {
         return Composant.construireHtmlInsertComposantPriv(getClass());
+    }
+
+    public String construireHtmlInsertComposant(String prefix) throws Exception {
+        return Composant.construireHtmlInsertComposantPriv(getClass(), prefix);
     }
 
     public String construireHtmlTable() {
