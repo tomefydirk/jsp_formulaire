@@ -19,9 +19,21 @@ public class Composant {
         this.data = data;
     }
 
-    public String construireHtmlInsertComposant() throws Exception {
+    public static String construireClassForm(Class<? extends Object> toSerialize, String action) throws Exception {
         String html = "";
-        Field[] fields = this.getClass().getDeclaredFields();
+        html += String.format("<form method='POST' action='%s'>", action);
+        if (Composant.class.isAssignableFrom(toSerialize)) {
+            html += ((Composant) toSerialize.getConstructor().newInstance()).construireHtmlInsertComposant();
+        } else {
+            html += construireHtmlInsertComposantPriv(toSerialize);
+        }
+        html += "</form>";
+        return html;
+    }
+
+    private static String construireHtmlInsertComposantPriv(Class<? extends Object> obj) throws Exception {
+        String html = "";
+        Field[] fields = obj.getDeclaredFields();
 
         for (int i = 0; i < fields.length; i++) {
             Field f = fields[i];
@@ -46,6 +58,10 @@ public class Composant {
         }
 
         return html;
+    }
+
+    public String construireHtmlInsertComposant() throws Exception {
+        return Composant.construireHtmlInsertComposantPriv(getClass());
     }
 
     public String construireHtmlTable() {
