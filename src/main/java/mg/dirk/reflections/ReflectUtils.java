@@ -28,7 +28,8 @@ public class ReflectUtils {
         return targetClass.getMethod(getFieldSetterName(field), field.getType());
     }
 
-    public static boolean isAnnotationsPresent(Field field, Class<? extends Annotation>... excludedAnnotations) {
+    public static boolean isAnnotationsPresent(Field field,
+            @SuppressWarnings("unchecked") Class<? extends Annotation>... excludedAnnotations) {
         for (Class<? extends Annotation> class1 : excludedAnnotations) {
             if (field.isAnnotationPresent(class1)) {
                 return true;
@@ -37,7 +38,8 @@ public class ReflectUtils {
         return false;
     }
 
-    public static boolean isAnnotationsPresent(Method field, Class<? extends Annotation>... excludedAnnotations) {
+    public static boolean isAnnotationsPresent(Method field,
+            @SuppressWarnings("unchecked") Class<? extends Annotation>... excludedAnnotations) {
         for (Class<? extends Annotation> class1 : excludedAnnotations) {
             if (field.isAnnotationPresent(class1)) {
                 return true;
@@ -47,7 +49,7 @@ public class ReflectUtils {
     }
 
     public static boolean isAnnotationsPresent(Class<? extends Object> field,
-            Class<? extends Annotation>... excludedAnnotations) {
+            @SuppressWarnings("unchecked") Class<? extends Annotation>... excludedAnnotations) {
         for (Class<? extends Annotation> class1 : excludedAnnotations) {
             if (field.isAnnotationPresent(class1)) {
                 return true;
@@ -57,7 +59,7 @@ public class ReflectUtils {
     }
 
     public static Field[] getFieldsWithExcludedAnnotations(Class<? extends Object> targetClass,
-            Class<? extends Annotation>... excludedAnnotations) {
+            @SuppressWarnings("unchecked") Class<? extends Annotation>... excludedAnnotations) {
         List<Field> names = new ArrayList<>();
         for (Field field : targetClass.getDeclaredFields()) {
             if (isAnnotationsPresent(field, excludedAnnotations)) {
@@ -69,7 +71,7 @@ public class ReflectUtils {
     }
 
     public static String[] getFieldNames(Class<? extends Object> targetClass,
-            Class<? extends Annotation>... excludedAnnotations) {
+            @SuppressWarnings("unchecked") Class<? extends Annotation>... excludedAnnotations) {
         List<String> names = new ArrayList<>();
         for (Field field : getFieldsWithExcludedAnnotations(targetClass, excludedAnnotations)) {
             names.add(field.getName());
@@ -86,7 +88,8 @@ public class ReflectUtils {
         return targetClass.getMethod(getFieldGetterName(field));
     }
 
-    public static Object[] getFieldValues(Object object, Class<? extends Annotation>... excludedAnnotations)
+    public static Object[] getFieldValues(Object object,
+            @SuppressWarnings("unchecked") Class<? extends Annotation>... excludedAnnotations)
             throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException {
         List<Object> list = new ArrayList<>();
         Class<? extends Object> obj_class = object.getClass();

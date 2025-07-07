@@ -30,6 +30,7 @@ public class Composant {
             html += "<label>" + f.getName() + "</label> : ";
             if (f.getType().getName().contains("Affichage.")) {
                 html += "</br>";
+                @SuppressWarnings("unchecked")
                 Class<? extends Composant> classModel = (Class<? extends Composant>) Class
                         .forName(f.getType().getName());
                 Composant instance = classModel.getConstructor().newInstance();
