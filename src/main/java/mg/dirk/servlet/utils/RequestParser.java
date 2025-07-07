@@ -55,7 +55,7 @@ public class RequestParser {
                                 field.getType())));
             } else if (!fieldType.isInterface() && !fieldType.isArray()) {
                 ReflectUtils.getFieldGetter(toUseClass, field).invoke(t,
-                        this.getFromParameters(field.getType(), String.format("%s%s", maybePrefix)));
+                        this.getFromParameters(field.getType(), String.format("%s%s", maybePrefix, field.getName())));
             }
         }
         return t;
