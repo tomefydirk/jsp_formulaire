@@ -27,6 +27,7 @@ public class Composant {
         } else {
             html += construireHtmlInsertComposantPriv(toSerialize);
         }
+        html += String.format("<button type='submit'>Inserer</button>");
         html += "</form>";
         return html;
     }
