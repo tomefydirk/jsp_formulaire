@@ -44,15 +44,16 @@ public class RequestParser {
             maybePrefix = "";
         }
         for (Field field : ReflectUtils.getFieldsWithExcludedAnnotations(toUseClass, SkipDeserialization.class)) {
-            if (toUseClass.equals(String[].class)) {
+            Class<?> fieldType = field.getType();
+            if (fieldType.equals(String[].class)) {
                 ReflectUtils.getFieldSetter(toUseClass, field).invoke(t,
                         (Object) request.getParameterValues(String.format("%s%s", maybePrefix, field.getName())));
-            } else if (ReflectUtils.isSerdable(toUseClass)) {
+            } else if (ReflectUtils.isSerdable(fieldType)) {
                 ReflectUtils.getFieldSetter(toUseClass, field).invoke(t,
                         (ReflectUtils.parseString(
                                 request.getParameter(String.format("%s%s", maybePrefix, field.getName())),
                                 field.getType())));
-            } else if (toUseClass.isInterface() || toUseClass.isArray()) {
+            } else if (!fieldType.isInterface() && !fieldType.isArray()) {
                 ReflectUtils.getFieldGetter(toUseClass, field).invoke(t,
                         this.getFromParameters(field.getType(), String.format("%s%s", maybePrefix)));
             }
