@@ -1,7 +1,14 @@
 package Affichage;
 
-public class Deroulante extends Composant{
+import mg.dirk.csv.annotations.SkipDeserialization;
+import mg.dirk.csv.annotations.SkipSerialization;
+
+public class Deroulante extends Composant {
+    @SkipDeserialization
+    @SkipSerialization
     private String[] cle;
+    @SkipDeserialization
+    @SkipSerialization
     private String[] valeur;
 
     public String[] getCle() {
@@ -21,15 +28,15 @@ public class Deroulante extends Composant{
     }
 
     @Override
-    public String construireHtmlInsertComposant()throws Exception{
+    public String construireHtmlInsertComposant() throws Exception {
         String html = "";
-        if(cle!=null){
-            html+="<select name = '"+this.getClass().getName()+"'>";
-            html+="<option value='%'>Tous</option>";
-            for(int i = 0;i< cle.length;i++){
-                html+="<option value='"+getCle()[i]+"'>"+getValeur()[i]+"</option>";
+        if (cle != null) {
+            html += "<select name = '" + this.getClass().getName() + "'>";
+            html += "<option value='%'>Tous</option>";
+            for (int i = 0; i < cle.length; i++) {
+                html += "<option value='" + getCle()[i] + "'>" + getValeur()[i] + "</option>";
             }
-            html+="</select>";
+            html += "</select>";
         }
         return html;
     }
