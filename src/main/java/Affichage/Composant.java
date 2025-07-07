@@ -28,22 +28,20 @@ public class Composant {
             f.setAccessible(true);
             Class<?> type = f.getType();
             html += "<label>" + f.getName() + "</label> : ";
-            if (f.getType().getName().contains("Affichage.")) {
+            if (Composant.class.isAssignableFrom(type)) {
                 html += "</br>";
-                @SuppressWarnings("unchecked")
-                Class<? extends Composant> classModel = (Class<? extends Composant>) Class
-                        .forName(f.getType().getName());
-                Composant instance = classModel.getConstructor().newInstance();
-                html += instance.construireHtmlInsertComposant();
-            }
-            if (type.equals(String.class)) {
+                Composant instance = (Composant) type.getConstructor().newInstance();
+                if (instance instanceof Deroulante) {
+                    ((Deroulante) instance).construireDeroulanteComposant(f.getName());
+                } else {
+                    html += instance.construireHtmlInsertComposant();
+                }
+            } else if (type.equals(String.class)) {
                 html += "<input type='text' name='" + f.getName() + "' />\n";
-            }
-            if (type.equals(int.class) || type.equals(Integer.class)
+            } else if (type.equals(int.class) || type.equals(Integer.class)
                     || type.equals(double.class) || type.equals(Double.class)) {
                 html += "<input type='number' name='" + f.getName() + "' />\n";
             }
-
             html += "</br>";
         }
 

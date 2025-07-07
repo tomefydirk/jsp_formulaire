@@ -27,11 +27,10 @@ public class Deroulante extends Composant {
         this.valeur = valeur;
     }
 
-    @Override
-    public String construireHtmlInsertComposant() throws Exception {
+    public String construireDeroulanteComposant(String name) throws Exception {
         String html = "";
         if (cle != null) {
-            html += "<select name = '" + this.getClass().getName() + "'>";
+            html += "<select name = '" + name + "'>";
             html += "<option value='%'>Tous</option>";
             for (int i = 0; i < cle.length; i++) {
                 html += "<option value='" + getCle()[i] + "'>" + getValeur()[i] + "</option>";
@@ -40,4 +39,10 @@ public class Deroulante extends Composant {
         }
         return html;
     }
+
+    @Override
+    public String construireHtmlInsertComposant() throws Exception {
+        return this.construireDeroulanteComposant(this.getClass().getName());
+    }
+
 }
