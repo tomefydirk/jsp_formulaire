@@ -63,11 +63,11 @@ public class Composant {
             String fieldName = String.format("%s%s", maybePrefix, f.getName());
             html += "<label>" + fieldName + "</label> : ";
             if (Composant.class.isAssignableFrom(type)) {
-                html += "</br>";
                 Composant instance = (Composant) type.getConstructor().newInstance();
                 if (instance instanceof Deroulante) {
                     html += ((Deroulante) instance).construireDeroulanteComposant(fieldName);
                 } else {
+                    html += "</br>";
                     html += instance.construireHtmlInsertComposant(fieldName);
                 }
             } else if (type.equals(String.class)) {
