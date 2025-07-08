@@ -11,7 +11,7 @@
 </h1>
 <br/>
 <%
-Personne p = new Personne();
+// Personne p = new Personne();
   /*  Vector tableau = new Vector();
     tableau.add(new Personne("Jean","Jaques",  30));
     tableau.add(new Personne("Marie","Jeanne",  25));
@@ -21,10 +21,10 @@ Personne p = new Personne();
 //PersonneLocalise pl = new PersonneLocalise();
 //    Voiture v = new Voiture();
 //out.println(pl.construireHtmlInsertComposant());
-out.println(p.construireHtmlInsertComposant());
+out.println(Composant.construireClassForm(Personne.class, "persone-import"));
 //out.println(loc.construireHtmlInsertComposant());
 //out.println(l.construireHtmlTable());
-
 %>
+<a href="./personne-table.jsp">table</a>
 </body>
 </html>
