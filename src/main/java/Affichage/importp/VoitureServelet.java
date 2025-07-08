@@ -17,13 +17,13 @@ import Affichage.Voiture;
 import mg.dirk.csv.CSVUtils;
 import mg.dirk.servlet.utils.RequestParser;
 
-@WebServlet(name = "voiture-serv", value = "/voiture/import.do")
+@WebServlet(name = "voiture-serv", value = "/voiture-import")
 public class VoitureServelet extends HttpServlet {
     public static final String voitureCSV = "./voitures.csv";
 
     @Override
     public void init() throws ServletException {
-        // TODO Auto-generated method stub
+      
         super.init();
         File file = new File(voitureCSV);
         if (!file.exists()) {
@@ -61,7 +61,7 @@ public class VoitureServelet extends HttpServlet {
             CSVUtils.saveToFile(voitures, voitureCSV);
 
         } catch (Exception e) {
-            // TODO: handle exception
+          
             e.printStackTrace(resp.getWriter());
         }
     }

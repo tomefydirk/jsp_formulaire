@@ -12,8 +12,8 @@
             Reflect gen
         </h1>
         <br />
-        <!-- NOTE Tonga dia mamorona formulaire par rapport amin'ilay Classe -->
-        <%= Composant.construireClassForm(Voiture.class, "voiture/import.do") %>
+     
+        <%= Composant.construireClassForm(Voiture.class, "voiture-import") %>
     </body>
 
     </html>
