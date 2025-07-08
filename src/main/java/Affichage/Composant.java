@@ -1,11 +1,13 @@
 package Affichage;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Vector;
 
 import mg.dirk.csv.annotations.SkipDeserialization;
 import mg.dirk.csv.annotations.SkipSerialization;
+import mg.dirk.reflections.ReflectUtils;
 
 public class Composant {
     @SkipDeserialization
@@ -89,31 +91,67 @@ public class Composant {
         return Composant.construireHtmlInsertComposantPriv(getClass(), prefix);
     }
 
-    public static <T extends Object> String construireHtmlTable(List<T> data) {
+    @SuppressWarnings("unchecked")
+    private static <T extends Object> String constructHtmlNestedHeader(Class<T> class1, String prefix) {
+        String html = "";
+        boolean isPrefixUnvalid = prefix == null || prefix.trim().isEmpty();
+        String maybePrefix;
+        if (!isPrefixUnvalid) {
+            if (prefix.endsWith(".")) {
+                maybePrefix = prefix;
+            } else {
+                maybePrefix = String.format("%s.", prefix);
+            }
+        } else {
+            maybePrefix = "";
+        }
+
+        for (Field field : ReflectUtils.getFieldsWithExcludedAnnotations(class1, SkipSerialization.class)) {
+            if (ReflectUtils.isSerdable(field.getType())) {
+                html += String.format("<th>%s%s</th>", maybePrefix, field.getName());
+            } else if (!field.getType().isArray()) {
+                html += constructHtmlNestedHeader(field.getType(), String.format("%s%s", maybePrefix, field.getName()));
+            }
+        }
+
+        return html;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends Object> String construireTableLigne(T data)
+            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException {
+        String html = "";
+
+        Class<T> dataClass = (Class<T>) data.getClass();
+        for (Field field : ReflectUtils.getFieldsWithExcludedAnnotations(dataClass, SkipSerialization.class)) {
+            Class<?> fieldType = field.getType();
+            if (ReflectUtils.isSerdable(fieldType)) {
+                html += String.format("<td>%s</td>",
+                        ReflectUtils.formatToString(ReflectUtils.getFieldGetter(dataClass, field).invoke(data)));
+            } else if (!fieldType.isArray()) {
+                html += construireTableLigne(ReflectUtils.getFieldGetter(dataClass, field).invoke(data));
+            }
+        }
+
+        return html;
+    }
+
+    public static <T extends Object> String construireHtmlTable(List<T> data)
+            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException {
         if (data != null && data.size() > 0) {
             String htmlTable = "";
             htmlTable += "<table border='1'>\n";
             htmlTable += "<tr>\n";
 
             // Ajouter les en-têtes de colonnes
-            Field[] tableau_champ = data.get(0).getClass().getDeclaredFields();
-            for (int i = 0; i < tableau_champ.length; i++) {
-                htmlTable += "<th>";
-                htmlTable += tableau_champ[i].getName();
-                htmlTable += "</th>\n";
-            }
+            htmlTable += constructHtmlNestedHeader(data.get(0).getClass(), null);
             htmlTable += "</tr>\n";
 
             // Ajouter les lignes de données
             for (int i = 0; i < data.size(); i++) {
                 htmlTable += "<tr>\n";
-                for (int j = 0; j < tableau_champ.length; j++) {
-                    tableau_champ[j].setAccessible(true);
-                    htmlTable += "<td>";
-                    htmlTable += getValField(data.get(i), tableau_champ[j]);
-                    htmlTable += "</td>\n";
+                htmlTable += construireTableLigne(data.get(i));
 
-                }
                 htmlTable += "</tr>\n";
             }
             htmlTable += "</table>";
@@ -123,7 +161,8 @@ public class Composant {
         return "";
     }
 
-    public String construireHtmlTable() {
+    public String construireHtmlTable()
+            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException {
         return Composant.construireHtmlTable(getData());
     }
 
