@@ -26,7 +26,12 @@ public class Composant {
         String html = "";
         html += String.format("<form method='POST' action='%s'>", action);
         if (Composant.class.isAssignableFrom(toSerialize)) {
-            html += ((Composant) toSerialize.getConstructor().newInstance()).construireHtmlInsertComposant();
+            Composant cmp = (Composant) toSerialize.getConstructor().newInstance();
+            // if (cmp instanceof Deroulante) {
+            // html += ((Deroulante) cmp).construireDeroulanteComposant("");
+            // } else {
+            html += (cmp).construireHtmlInsertComposant();
+            // }
         } else {
             html += construireHtmlInsertComposantPriv(toSerialize);
         }
@@ -58,11 +63,11 @@ public class Composant {
             String fieldName = String.format("%s%s", maybePrefix, f.getName());
             html += "<label>" + fieldName + "</label> : ";
             if (Composant.class.isAssignableFrom(type)) {
-                html += "</br>";
                 Composant instance = (Composant) type.getConstructor().newInstance();
                 if (instance instanceof Deroulante) {
-                    ((Deroulante) instance).construireDeroulanteComposant(fieldName);
+                    html += ((Deroulante) instance).construireDeroulanteComposant(fieldName);
                 } else {
+                    html += "</br>";
                     html += instance.construireHtmlInsertComposant(fieldName);
                 }
             } else if (type.equals(String.class)) {

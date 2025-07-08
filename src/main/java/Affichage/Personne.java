@@ -1,10 +1,10 @@
 package Affichage;
 
-public class Personne extends Composant{
+public class Personne extends Composant {
     private String nom;
     private String prenom;
     private int age;
-   // private Sexe sexe;
+    private Sexe sexe;
 
     public Personne() {
     }
@@ -15,13 +15,13 @@ public class Personne extends Composant{
         this.age = age;
     }
 
-   /* public Sexe getSexe() {
+    public Sexe getSexe() {
         return sexe;
     }
 
     public void setSexe(Sexe sexe) {
         this.sexe = sexe;
-    } */
+    }
 
     public String getNom() {
         return nom;
