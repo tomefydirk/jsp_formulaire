@@ -55,8 +55,13 @@ public class PersonneServelet extends HttpServlet {
             } catch (Exception e) {
                 voitures = new ArrayList<>();
             }
-
-            voitures.add(persone);
+            try {
+                int indexToUpdate = Integer.parseInt(req.getParameter("index"));
+                voitures.set(indexToUpdate, persone);
+            } catch (Exception e) {
+                // TODO: handle exception
+                voitures.add(persone);
+            }
 
             CSVUtils.saveToFile(voitures, personeCSV);
 
