@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InvalidClassException;
+import java.io.Reader;
+import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -92,10 +94,16 @@ public class CSVUtils {
     public static <T extends Object> void saveToFile(Iterable<T> objects, String filePath) throws IOException,
             IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException {
         File file = new File(filePath);
+        try (FileWriter writer = new FileWriter(file);) {
+            saveToWriter(objects, writer);
+        }
+    }
+
+    public static <T extends Object> void saveToWriter(Iterable<T> objects, Writer writer) throws IOException,
+            IllegalAccessException, InvocationTargetException, NoSuchMethodException, SecurityException {
         CSVFormat csvFormat = null;
         CSVPrinter csvPrinter = null;
-        try (FileWriter writer = new FileWriter(file);
-                BufferedWriter bufWriter = new BufferedWriter(writer);) {
+        try (BufferedWriter bufWriter = new BufferedWriter(writer);) {
             boolean isFirstSetup = true;
 
             for (T t : objects) {
@@ -153,12 +161,21 @@ public class CSVUtils {
     public static <T extends Object> List<T> deserializeFile(Class<T> class1, String file)
             throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException, ParseException {
+
+        try (
+                FileReader file_reader = new FileReader(file);) {
+            return deserializeFromReader(class1, file_reader);
+        }
+    }
+
+    public static <T extends Object> List<T> deserializeFromReader(Class<T> class1, Reader reader1)
+            throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException, NoSuchMethodException, SecurityException, ParseException {
         List<T> datas = new ArrayList<>();
         defaultFormatBuilder.setHeader();
 
         try (
-                FileReader file_reader = new FileReader(file);
-                BufferedReader reader = new BufferedReader(file_reader);
+                BufferedReader reader = new BufferedReader(reader1);
                 CSVParser parser = defaultFormatBuilder.setHeader().setIgnoreEmptyLines(true).get().parse(reader);) {
             for (CSVRecord csvRecord : parser) {
                 datas.add(deserializeCSVRecord(class1, csvRecord));
