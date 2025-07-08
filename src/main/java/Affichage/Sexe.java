@@ -30,11 +30,11 @@ public class Sexe extends Deroulante {
     // NOTE ato no mamadika cle ho lasa deroulante
     public void deroulanteParseFunc(String paramData) {
         int ind = 0;
-        if (this.getCle() == null) {
+        if (this.getCle() == null || paramData == null) {
             return;
         }
         for (int i = 0; i < this.getCle().length; i++) {
-            if (paramData.trim() == this.getCle()[i]) {
+            if (paramData.trim().equals(this.getCle()[i])) {
                 ind = i;
                 break;
             }
