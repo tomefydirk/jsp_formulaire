@@ -13,7 +13,7 @@
     <body>
         <%
             // Mamaky ilay fichier `VoitureServelet.voitureCSV`
-            List<Personne> voitures = CSVUtils.deserializeFile(Personne.class, Personne.personeCSV);
+            List<Personne> voitures = CSVUtils.deserializeFile(Personne.class, PersonneServelet.personeCSV);
             // Affichage tableau
             out.println(Composant.construireHtmlTable(voitures));
         %>
